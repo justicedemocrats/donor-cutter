@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 //Usage: node index.js <file> <district> <real>
-//Example: node index.js donors.csv NY-14 real
+//Example: node index.js donors.csv NY_14 real
 
 const Baby = require('babyparse')
 const fs = require('fs')
@@ -22,6 +22,7 @@ async function mark_cuts() {
     for (let index = 0; index < parsed.length; index++) {
       console.log(`Adding custom action to ${parsed[index].Email}`)
       if (parsed[index].Email) {
+        const email = parsed[index].Email.split(';')[0]
         if (isReal) {
           let donorcutpage = await actionkit.get('page')
             .query({ name: 'donors_for_candidates' })
@@ -32,7 +33,7 @@ async function mark_cuts() {
           const pageId = donorcutpage.body.objects[0].id
           const result = await actionkit.post('action')
             .send({
-              email: parsed[index].Email,
+              email: email,
               page: 'donors_for_candidates',
               action_district: district
             })      
@@ -49,7 +50,7 @@ async function mark_cuts() {
       }
     }
     const final = Baby.unparse(newData, { header: true })
-    await fs.writeFileSync(`${moment().format('YYYY-MM-DD')}_JD_Donor_List_${district.toUpperCase().replace('-','_')}.csv`, final)
+    await fs.writeFileSync(`${moment().format('YYYY_MM_DD')}_JD_Donor_List_${district.toUpperCase().replace('-','_')}.csv`, final)
   } catch (ex) {
     console.log(ex)
   }

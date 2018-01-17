@@ -8,6 +8,6 @@ node index.js <file> <district> <real>
 
 Example:
 ```
-node index.js donors.csv NY-14 real
+node index.js donors.csv NY_14 real
 ```
 
